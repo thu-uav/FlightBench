@@ -1,6 +1,6 @@
 # FlightBench
 
-FlightBench is an open-source comprehensive benchmark for 3D spatial planning on quadrotors, comparing classical optimization-based methods with emerging learning based approaches. For more details, please refer to our [paper](https://)
+FlightBench is an open-source comprehensive benchmark for 3D spatial planning on quadrotors, comparing classical optimization-based methods with emerging learning based approaches. For more details, please refer to our paper: [FlightBench: A Comprehensive Benchmark of Spatial Planning Methods for Quadrotors](https://arxiv.org/abs/2406.05687)
 
 ## Installation
 Test on Ubuntu-20.04.
@@ -38,7 +38,7 @@ pip install .
 cd $FLIGHTMARE_PATH/flightrl
 pip install -e .
 ```
-Then download scenes from [here]() and put them to `path/to/FlightBench/scene`
+Then download scenes from [here](https://cloud.tsinghua.edu.cn/f/54d91a7afeeb4006b9a3/?dl=1) and put them to `path/to/FlightBench/scene`
 
 Before install FlightBench, install [ROS Noetic](https://wiki.ros.org/noetic/Installation).
 ```bash
@@ -80,7 +80,7 @@ python3 -m venv agilepy # or any other name you like
 source agilepy/bin/activate
 pip install -r requirements.txt
 ```
-Download [this](). Put it into `path/to/FlightBench/flightrender` after unzip.
+Download [this](https://cloud.tsinghua.edu.cn/f/49674a52f55a451086bd/?dl=1). Put it into `path/to/FlightBench/flightrender` after unzip.
 
 ## Start benchmark
 ```bash
