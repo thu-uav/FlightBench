@@ -1,0 +1,37 @@
+# Python
+dist
+*.egg-info
+*.so
+__pycache__
+
+# venv
+flightpy
+
+# Gitignore
+flightrl/air_planner/evals
+
+# VScode
+.vscode/
+.vscode/*
+**/.vscode/*
+!.vscode/extensions.json
+
+# General
+_build/
+.sass-cache
+_posts
+_site
+
+# bag data
+flightbench/data/*
+flightrl/onpolicy/data/*
+flightrl/onpolicy/eval/*
+flightrl/onpolicy/offline_data/*
+scene/*
+flightrl/runs
+flightrl/evals
+flightbench/lmt_policy
+flightbench/lpa_policy
+# flightmare/flightrl/performance
+*.png
+dep/*

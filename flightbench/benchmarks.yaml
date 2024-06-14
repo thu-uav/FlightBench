@@ -1,0 +1,21 @@
+repositories:
+  benchmark_tgk-planner:
+    type: git
+    url: git@github.com:thu-uav/benchmark_tgk-planner.git
+    version: master
+  benchmark_ego-planner:
+    type: git
+    url: git@github.com:thu-uav/benchmark_ego-planner.git
+    version: master
+  benchmark_fast-planner:
+    type: git
+    url: git@github.com:thu-uav/benchmark_fast-planner.git
+    version: master
+  benchmark_agile_autonomy:
+    type: git
+    url: git@github.com:thu-uav/benchmark_agile_autonomy.git
+    version: master
+  benchmark_sb_min_time:
+    type: git
+    url: git@github.com:thu-uav/benchmark_sb_min_time.git
+    version: master

@@ -1,0 +1,7 @@
+# scene_id: 1 // set in launch file
+main_loop_freq: 30.0 #image frequency
+unity_render: yes 
+enable_rgb: true
+enable_depth: true
+enable_segmentation: false
+enable_opticalflow: false

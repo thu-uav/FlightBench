@@ -1,0 +1,167 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="quad_name" default="air"/>
+  <arg name="scene" default="0"/>
+  <arg name="baseline_name" default="test"/>
+  <arg name="test_case_num" default="1"/>
+
+  <arg name="mav_name" default="$(arg quad_name)"/>
+  <arg name="model" value="$(find rotors_description)/urdf/mav_generic_odometry_sensor.gazebo"/>
+  <arg name="world_name" default="$(find rotors_gazebo)/worlds/basic.world"/>
+
+  <arg name="use_unity_editor" default="false" />
+  <arg name="paused" value="false"/>
+  <arg name="gui" value="false"/>
+  <arg name="use_mpc" default="true"/>
+  <arg name="use_ground_truth" default="true"/>
+  <arg name="enable_ground_truth" default="true"/>
+  <arg name="enable_command_feedthrough" default="false"/>
+  <arg name="custom_models" default=""/>
+
+  <arg name="enable_logging" default="false"/>
+  <arg name="log_file" default="$(arg mav_name)"/>
+
+  <arg name="x_init" default="0"/>
+  <arg name="y_init" default="0"/>
+  <arg name="yaw_init" default="0"/>
+  <arg name="height" default="2.0"/>
+
+  <arg name="x_end" default="0"/>
+  <arg name="y_end" default="0"/>
+  <arg name="z_end" default="0"/>
+
+  <arg name="debug" default="false"/>
+  <arg name="verbose" default="false"/>
+
+  <param name="use_sim_time" value="true"/>
+  <arg name="if_agile" default="false"/>
+
+  <!-- Spawn the world !-->
+  <env name="GAZEBO_MODEL_PATH"
+      value="${GAZEBO_MODEL_PATH}:$(find rotors_gazebo)/models:$(arg custom_models)"/>
+  <env name="GAZEBO_RESOURCE_PATH"
+      value="${GAZEBO_RESOURCE_PATH}:$(find rotors_gazebo)/models"/>
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(arg world_name)" />
+    <arg name="debug" value="$(arg debug)" />
+    <arg name="paused" value="$(arg paused)" />
+    <arg name="gui" value="$(arg gui)" />
+    <arg name="verbose" value="$(arg verbose)"/>
+  </include>
+
+  <!-- Spawn the quadrotor in gazebo !-->
+  <group ns="$(arg mav_name)">
+    <include file="$(find rotors_gazebo)/launch/spawn_mav.launch">
+      <arg name="mav_name" value="$(arg mav_name)" />
+      <arg name="model" value="$(arg model)" />
+      <arg name="enable_logging" value="$(arg enable_logging)" />
+      <arg name="enable_ground_truth" value="$(arg enable_ground_truth)" />
+      <arg name="log_file" value="$(arg log_file)"/>
+      <arg name="x" value="$(arg x_init)" />
+      <arg name="y" value="$(arg y_init)" />
+      <arg name="yaw" value="$(arg yaw_init)"/>
+    </include>
+  </group>
+
+  <!-- control stuff !-->
+  <group ns="$(arg quad_name)" >
+
+    <!-- RPG RotorS interface. -->
+    <node pkg="rpg_rotors_interface" type="rpg_rotors_interface"
+        name="rpg_rotors_interface" output="screen" >
+      <rosparam file="$(find rpg_rotors_interface)/parameters/rpg_rotors_interface_air.yaml" />
+      <remap from="odometry" to="ground_truth/odometry" />
+      <remap from="rpg_rotors_interface/arm" to="bridge/arm" />
+    </node>
+
+    <!-- RPG Flightmare Unity Render. -->
+    <node pkg="flightrender" type="FM-full.x86_64" name="rpg_flightmare_render" unless="$(arg use_unity_editor)">
+    </node>
+
+    <!-- Autopilot -->
+    <group unless="$(arg use_mpc)">
+      <node pkg="autopilot" type="autopilot" name="autopilot" output="screen">
+        <rosparam file="$(find state_predictor)/parameters/air.yaml" />
+        <rosparam file="$(find rpg_rotors_interface)/parameters/position_controller_air.yaml" />
+        <rosparam file="$(find rpg_rotors_interface)/parameters/autopilot_air.yaml" />
+        <param name="optitrack_start_height" value="$(arg height)"/>
+
+        <param name="position_controller/use_rate_mode" value="True" />
+
+        <!-- <param name="velocity_estimate_in_world_frame" value="false" /> -->
+        <!-- <param name="state_estimate_timeout" value="0.05" />
+        <param name="control_command_delay" value="0.03" />
+        <param name="enable_command_feedthrough" value="$(arg enable_command_feedthrough)" /> -->
+
+        <remap from="autopilot/state_estimate" to="ground_truth/odometry" />
+      </node>
+    </group>
+
+    <group if="$(arg use_mpc)">
+      <node pkg="rpg_mpc" type="autopilot_mpc_instance" name="autopilot" output="screen">
+        <rosparam file="$(find state_predictor)/parameters/air.yaml" />
+        <rosparam file="$(find rpg_mpc)/parameters/air.yaml" />
+        <rosparam file="$(find rpg_rotors_interface)/parameters/autopilot_air.yaml" />
+        <param name="optitrack_start_height" value="$(arg height)"/>
+
+        <!-- <param name="velocity_estimate_in_world_frame" value="false" />
+        <param name="state_estimate_timeout" value="0.05" />
+        <param name="control_command_delay" value="0.03" />
+        <param name="enable_command_feedthrough" value="$(arg enable_command_feedthrough)" /> -->
+
+        <remap from="autopilot/state_estimate" to="ground_truth/odometry" />
+      </node>
+    </group>
+
+    <node pkg="flightros" type="flight_pilot_node" name="flight_pilot_node" output="screen">
+      <rosparam file="$(find flightros)/params/default.yaml" />
+      <param name="scene_id" value="$(arg scene)"/>
+      <remap from="flight_pilot/state_estimate" to="ground_truth/odometry" />
+      <param name="start_x" value="$(arg x_init)"/>
+      <param name="start_y" value="$(arg y_init)"/>
+      <param name="end_x" value="$(arg x_end)"/>
+      <param name="end_y" value="$(arg y_end)"/>
+      <param name="end_z" value="$(arg z_end)"/>
+    </node>
+
+    <!-- <node pkg="joy" type="joy_node" name="joy_node">
+      <param name="autorepeat_rate" value="10"/>
+    </node> -->
+
+    <!-- <node pkg="manual_flight_assistant" type="manual_flight_assistant"
+        name="manual_flight_assistant" output="screen">
+      <rosparam file="$(find rpg_rotors_interface)/parameters/manual_flight_assistant.yaml"/>
+    </node> -->
+
+    <node name="rqt_quad_gui" pkg="rqt_gui" type="rqt_gui"
+        args="-s rqt_quad_gui.basic_flight.BasicFlight --args
+        --quad_name $(arg quad_name)" output="screen"/>
+    <node pkg="rosbag" type="record" name="bag_recorder" args="-o $(find flightbench)/data/$(arg test_case_num)_$(arg baseline_name).bag /$(arg quad_name)/autopilot/feedback /mapping_time /planning_time /projection_time /$(arg quad_name)/flight_pilot/if_start /$(arg quad_name)/flight_pilot/if_end /$(arg quad_name)/flight_pilot/if_collision /$(arg quad_name)/ground_truth/imu /air/ground_truth/odometry"/>
+
+    <!-- start agile_autonomy node if needed -->
+    <group if="$(arg if_agile)">
+      <!-- Trajectory Planning -->
+      <node pkg="agile_autonomy" type="agile_autonomy" name="agile_autonomy" output="screen">
+          <rosparam file="$(find agile_autonomy)/parameters/case$(arg test_case_num).yaml"/>
+          <rosparam file="$(find agile_autonomy)/parameters/flightmare.yaml"/>
+          <rosparam file="$(find agile_autonomy)/parameters/mpc_params_air.yaml"/>
+          <rosparam file="$(find state_predictor)/parameters/air.yaml"/>
+          <param name="data_dir" value="$(find agile_autonomy)/../data"/>
+          <remap from="completed_global_plan" to="/test_primitive/completed_planning"/>
+      </node>
+      <!-- Global Planning -->
+      <!-- <include file="$(find mpl_test_node)/launch/ellipsoid_planner_node/global_planning.launch"/> -->
+
+      <!-- label with 8 parallel threads -->
+      <include file="$(find traj_sampler)/launch/generate_label_8.launch">
+        <arg name="quad_name" value="$(arg quad_name)"/>
+      </include>
+
+      <!-- Visualization -->
+      <node pkg="rviz" type="rviz" name="viz_face" args="-d $(find agile_autonomy)/resources/rviz/simulation.rviz"/>
+
+    </group>
+
+  </group>
+
+</launch>

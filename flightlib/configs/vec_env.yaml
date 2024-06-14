@@ -1,0 +1,6 @@
+env:
+  num_envs: 1
+  num_threads: 1
+  render: 'no'
+  scene_id: 3
+  seed: 1

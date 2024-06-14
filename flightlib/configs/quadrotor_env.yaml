@@ -1,0 +1,11 @@
+quadrotor_env:
+   camera: no
+   sim_dt: 0.025
+   max_t: 50.0
+   sigma_x: 0.26
+   sigma_y: 0.28
+   sigma_z: 0.42
+
+control:
+  ctbr: True # if use ctbr
+  acc_max: 20.00 # default: 4 * gravity 

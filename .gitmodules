@@ -1,0 +1,68 @@
+[submodule "dep/catkin_boost_python_buildtool"]
+	path = dep/catkin_boost_python_buildtool
+	url = git@github.com:ethz-asl/catkin_boost_python_buildtool.git
+	branch = master
+[submodule "dep/catkin_simple"]
+	path = dep/catkin_simple
+	url = git@github.com:catkin/catkin_simple.git
+	branch = master
+[submodule "dep/eigen_catkin"]
+	path = dep/eigen_catkin
+	url = git@github.com:ethz-asl/eigen_catkin.git
+	branch = master
+[submodule "dep/eigen_checks"]
+	path = dep/eigen_checks
+	url = git@github.com:ethz-asl/eigen_checks.git
+	branch = master
+[submodule "dep/rpg_common"]
+	path = dep/rpg_common
+	url = git@github.com:kelia/rpg_common.git
+	branch = main
+[submodule "dep/gflags_catkin"]
+	path = dep/gflags_catkin
+	url = git@github.com:ethz-asl/gflags_catkin.git
+	branch = master
+[submodule "dep/glog_catkin"]
+	path = dep/glog_catkin
+	url = git@github.com:ethz-asl/glog_catkin.git
+	branch = master
+[submodule "dep/minimum_jerk_trajectories"]
+	path = dep/minimum_jerk_trajectories
+	url = git@github.com:uzh-rpg/minimum_jerk_trajectories.git
+	branch = master
+[submodule "dep/minkindr"]
+	path = dep/minkindr
+	url = git@github.com:ethz-asl/minkindr.git
+	branch = master
+[submodule "dep/minkindr_ros"]
+	path = dep/minkindr_ros
+	url = git@github.com:ethz-asl/minkindr_ros.git
+	branch = master
+[submodule "dep/mav_comm"]
+	path = dep/mav_comm
+	url = git@github.com:ethz-asl/mav_comm.git
+	branch = master
+[submodule "dep/numpy_eigen"]
+	path = dep/numpy_eigen
+	url = git@github.com:ethz-asl/numpy_eigen.git
+	branch = master
+[submodule "dep/rpg_single_board_io"]
+	path = dep/rpg_single_board_io
+	url = git@github.com:uzh-rpg/rpg_single_board_io.git
+	branch = master
+[submodule "dep/rotors_simulator"]
+	path = dep/rotors_simulator
+	url = git@github.com:thu-uav/bench_rotors_simulator.git
+	branch = master
+[submodule "dep/quadrotor_common"]
+	path = dep/quadrotor_common
+	url = git@github.com:thu-uav/bench_quadrotor_common.git
+	branch = master
+[submodule "dep/quadrotor_control"]
+	path = dep/quadrotor_control
+	url = git@github.com:thu-uav/bench_quadrotor_control.git
+	branch = master
+[submodule "dep/rpg_mpc"]
+	path = dep/rpg_mpc
+	url = git@github.com:thu-uav/bench_mpc.git
+	branch = master

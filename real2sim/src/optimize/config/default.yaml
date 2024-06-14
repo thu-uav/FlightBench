@@ -1,0 +1,8 @@
+bag_path: "/home/ysa/workspace/flightmare/flightmare/real2sim/src/optimize/data/figure-8-mpc.bag"
+odom_topic: "/air/t265/odom/sample"
+command_topic: "/air/control_command"
+feedback_topic: "/air/autopilot/feedback"
+default_param: "/home/ysa/workspace/flightmare/flightmare/real2sim/src/optimize/config/default_param.yaml"
+target_param: "/home/ysa/workspace/flightmare/flightmare/real2sim/src/optimize/config/target_param.yaml"
+result_path: "/home/ysa/workspace/flightmare/flightmare/real2sim/src/optimize/result"
+bodyrates_in_world: true
