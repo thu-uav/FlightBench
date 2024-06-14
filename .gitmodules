@@ -10,10 +10,6 @@
 	path = dep/eigen_catkin
 	url = git@github.com:ethz-asl/eigen_catkin.git
 	branch = master
-[submodule "dep/eigen_checks"]
-	path = dep/eigen_checks
-	url = git@github.com:ethz-asl/eigen_checks.git
-	branch = master
 [submodule "dep/rpg_common"]
 	path = dep/rpg_common
 	url = git@github.com:kelia/rpg_common.git
@@ -65,4 +61,8 @@
 [submodule "dep/rpg_mpc"]
 	path = dep/rpg_mpc
 	url = git@github.com:thu-uav/bench_mpc.git
+	branch = master
+[submodule "dep/eigen_check"]
+	path = dep/eigen_check
+	url = git@github.com:ethz-asl/eigen_checks.git
 	branch = master

@@ -34,4 +34,3 @@ flightbench/lmt_policy
 flightbench/lpa_policy
 # flightmare/flightrl/performance
 *.png
-dep/*
