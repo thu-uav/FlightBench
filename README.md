@@ -1,20 +1,14 @@
-# Flightmare - thu-uav改版
+# FlightBench
 
-**Flightmare** is a flexible modular quadrotor simulator.
-Flightmare is composed of two main components: a configurable rendering engine built on Unity and a flexible physics engine for dynamics simulation.
-Those two components are totally decoupled and can run independently from each other. 
-
-This repo is forked from https://github.com/uzh-rpg/flightmare. We modified some interfaces and dynamics of the simulator to make it more suitable for RL training and real world deployment.
-
-We developed a flight benchmark including several learning/sample-based/optimize-based baselines based on this simulator.
+FlightBench
 
 ## Installation
+Test on Ubuntu-20.04 and ROS Noetic
 ```bash
-mkdir flightmare_ws && cd flightmare_ws
+mkdir flightbench_ws && cd flightbench_ws
 mkdir src && cd src
-# verified on ubuntu 18.04 and 20.04
 sudo apt-get update && sudo apt-get install git cmake python3 python3-dev python3-venv python3-rosbag
-git clone git@github.com:thu-uav/flightmare.git
+git clone git@github.com:thu-uav/FlightBench.git
 cd flightmare
 
 # We recommend using python virtual env
