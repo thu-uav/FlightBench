@@ -1,4 +1,4 @@
-# Welcome to FlightBench!
+# Welcome to FlightBench
 *FlightBench* is an open-source comprehensive benchmark for 3D spatial path planning on quadrotors built on [Flightmare](https://github.com/uzh-rpg/flightmare). *FlightBench* provides cusomizable test scenarios (including three quantitative task difficulty metrics), representative planning algorithms, and comprehensive evaluation metrics. Here's an overview of FlightBench.
 
 ![Overview of FlightBench](overview.jpg)
