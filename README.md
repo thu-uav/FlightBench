@@ -1,9 +1,19 @@
 # FlightBench
+[![Static Badge](https://img.shields.io/badge/flightmare-red)](https://github.com/uzh-rpg/flightmare)
+[![Python](https://img.shields.io/badge/python-3.8-yellow.svg)](https://docs.python.org/3.8/whatsnew/3.7.html)
+[![Docs](https://img.shields.io/badge/docs-passing-brightgreen.svg)](https://thu-uav.github.io/FlightBench/)
+[![License: GPLv3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/)
+
+
 ![Overview of FlightBench](docs/overview.jpg)
+
+<font><div align='center' > [[📖 Documentation](https://thu-uav.github.io/FlightBench/)]  [[📜 arXiv Paper](https://arxiv.org/abs/2406.05687)] </div> </font>
+
 ---
+
 *FlightBench* is an open-source comprehensive benchmark for 3D spatial path planning on quadrotors built on [Flightmare](https://github.com/uzh-rpg/flightmare). *FlightBench* provides cusomizable test scenarios (including three quantitative task difficulty metrics), representative planning algorithms, and comprehensive evaluation metrics. FlightBench also integrates the [MAPPO](https://github.com/marlbenchmark/on-policy) algorithm, facilitating the training of RL-based planning methods.
 
-For usage and more details, please refer to the [documentation]()
+For usage and more details, please refer to the [documentation](https://thu-uav.github.io/FlightBench/)
 
 ## Citation
 Please cite our paper [FlightBench: A Comprehensive Benchmark of Spatial Planning Methods for Quadrotors](https://arxiv.org/abs/2406.05687) if you use FlightBench in your work.
