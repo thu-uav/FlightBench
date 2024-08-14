@@ -20,3 +20,12 @@ Please cite our paper [FlightBench: A Comprehensive Benchmark of Spatial Plannin
 The source code is released under [GPLv3](https://www.gnu.org/licenses/) license.
 
 All third party libraries we used are listed bellow:
+
+| repository | License |
+|:---:|:---:|
+| [flightmare](https://github.com/uzh-rpg/flightmare) | [MIT](https://mit-license.org/) |
+| [Fast-Planner](https://github.com/HKUST-Aerial-Robotics/Fast-Planner) | [GPLv3](https://www.gnu.org/licenses/) |
+| [ego-planner](https://github.com/ZJU-FAST-Lab/ego-planner) | [GPLv3](https://www.gnu.org/licenses/) |
+| [TGK-Planner](https://github.com/ZJU-FAST-Lab/TGK-Planner) | [GPLv3](https://www.gnu.org/licenses/) |
+| [sb_min_time_quadrotor_planning](https://github.com/uzh-rpg/sb_min_time_quadrotor_planning) | [GPLv3](https://www.gnu.org/licenses/) |
+| [agile_autonomy](https://github.com/uzh-rpg/agile_autonomy) | [GPLv3](https://www.gnu.org/licenses/) |
