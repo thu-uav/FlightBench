@@ -279,6 +279,7 @@ webencodings==0.5.1
 websocket-client==1.7.0
 Werkzeug==3.0.1
 widgetsnbextension==4.0.9
+wheel==0.44.0
 xacro==1.14.16
 y-py==0.6.2
 ypy-websocket==0.8.4

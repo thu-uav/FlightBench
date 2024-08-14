@@ -1,5 +1,0 @@
-<launch>
-    <node pkg="optimize" type="optimizer" name="optimizer" output="screen">
-        <rosparam file="$(find optimize)/config/default.yaml" />
-    </node>
-</launch>

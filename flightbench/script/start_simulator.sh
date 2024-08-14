@@ -3,7 +3,7 @@ quad_name="air"
 echo -e "\nstarting simulator..."
 
 if [ $# != 2 ];
-then echo -e "\033[31mPlease use: './start_simulator <test_base_num> <baseline_name>' to start simulator\033[0m"
+then echo -e "\033[31mPlease use: './start_simulator <test_case_num> <baseline_name>' to start simulator\033[0m"
 exit -1
 fi
 

@@ -206,7 +206,7 @@ def parse_one_bag(path):
 
 if __name__ == "__main__":
     if len(sys.argv) != 4:
-        print("\033[31mPlease use: 'python3 bag_paser_.py <bag_path> <scene_id> <method_name>' to parse bags.\033[0m")
+        print("\033[31mPlease use: 'python3 bag_paser_.py <bag_path> <test_case_num> <baseline_name>' to parse bags.\033[0m")
         exit(-1)
     else:
         bag_list = os.listdir(sys.argv[1])

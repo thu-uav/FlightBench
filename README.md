@@ -1,86 +1,26 @@
 # FlightBench
+![Overview of FlightBench](docs/overview.jpg)
+---
+*FlightBench* is an open-source comprehensive benchmark for 3D spatial path planning on quadrotors built on [Flightmare](https://github.com/uzh-rpg/flightmare). *FlightBench* provides cusomizable test scenarios (including three quantitative task difficulty metrics), representative planning algorithms, and comprehensive evaluation metrics. FlightBench also integrates the [MAPPO](https://github.com/marlbenchmark/on-policy) algorithm, facilitating the training of RL-based planning methods.
 
-FlightBench is an open-source comprehensive benchmark for 3D spatial planning on quadrotors, comparing classical optimization-based methods with emerging learning based approaches. For more details, please refer to our paper: [FlightBench: A Comprehensive Benchmark of Spatial Planning Methods for Quadrotors](https://arxiv.org/abs/2406.05687)
+For usage and more details, please refer to the [documentation]()
 
-## Installation
-Test on Ubuntu-20.04.
-Install RL part first
-```bash
-mkdir flightbench_ws && cd flightbench_ws
-mkdir src && cd src
-sudo apt-get update && sudo apt-get install git cmake python3 python3-dev python3-venv python3-rosbag
-git clone git@github.com:thu-uav/FlightBench.git
-git submodule update --init
-cd flightmare
-
-# We recommend using python virtual env
-python3 -m venv flightpy # or any other name you like
-
-# Add FLIGHTMARE_PATH environment variable to .bashrc file:
-echo "export FLIGHTMARE_PATH=/path/to/FlightBench" >> ~/.bashrc
-source ~/.bashrc
-source flightpy/bin/activate # active the venv
-
-cd $FLIGHTMARE_PATH/flightrl
-sudo apt-get install build-essential cmake libzmqpp-dev libopencv-dev libeigen3-dev
-pip install -r requirements.txt
-cd $FLIGHTMARE_PATH/flightlib
-# for first time install
-mkdir build
-cd build
-cmake -S .. -B . -DCMAKELists_TXT=../CMakeLists_first.txt
-cd ..
-rm -rf build
-
-# then, install flightmare-pip
-pip install .
-
-cd $FLIGHTMARE_PATH/flightrl
-pip install -e .
-```
-Then download scenes from [here](https://cloud.tsinghua.edu.cn/f/54d91a7afeeb4006b9a3/?dl=1) and put them to `path/to/FlightBench/scene`
-
-Before install FlightBench, install [ROS Noetic](https://wiki.ros.org/noetic/Installation).
-```bash
-sudo apt-get update
-export ROS_DISTRO=noetic
-sudo apt-get install libgoogle-glog-dev protobuf-compiler ros-$ROS_DISTRO-octomap-msgs ros-$ROS_DISTRO-octomap-ros ros-$ROS_DISTRO-joy python3-vcstool ros-$ROS_DISTRO-mavros
-sudo apt-get install python3-pip
-sudo pip install catkin-tools
-
-# go flightbench_ws 
-cd flightbench_ws
-catkin config --init --mkdirs --extend /opt/ros/$ROS_DISTRO --merge-devel --cmake-args -DCMAKE_BUILD_TYPE=Release
-cd src
-# import benchmarks
-vcs-import < flightmare/flightbench/benchmarks.yaml
-# install deps
-sudo apt-get install libarmadillo-dev
-# instsll nlopt
-# in any dir
-git clone https://github.com/stevengj/nlopt.git
-cd nlopt
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-
-# back to flightbench_ws
-cd flightbench_ws
-catkin build
-mkdir FlightBench/flightbench/data
+## Citation
+Please cite our paper [FlightBench: A Comprehensive Benchmark of Spatial Planning Methods for Quadrotors](https://arxiv.org/abs/2406.05687) if you use FlightBench in your work.
+```bibtex
+@article{yu2024flightbench,
+  title={FlightBench: A Comprehensive Benchmark of Spatial Planning Methods for Quadrotors},
+  author={Yu, Shu-Ang and Yu, Chao and Gao, Feng and Wu, Yi and Wang, Yu},
+  journal={arXiv preprint arXiv:2406.05687},
+  year={2024}
+}
 ```
 
-Make another python venv to run agile-autonomy
-```bash
-# deactivate from existing venvs
-cd path\yo\benchmark_agile_autonomy
-python3 -m venv agilepy # or any other name you like
-source agilepy/bin/activate
-pip install -r requirements.txt
-```
-Download [this](https://cloud.tsinghua.edu.cn/f/49674a52f55a451086bd/?dl=1). Put it into `path/to/FlightBench/flightrender` after unzip.
+## License
+The source code is released under [GPLv3](https://www.gnu.org/licenses/) license.
+
+All third party libraries we used are listed bellow:
+
 
 ## Start benchmark
 ```bash
@@ -117,24 +57,3 @@ Method_types are listed following:
 - learning_pa
 - learning_min_time
 - sb_min_time
-
-## Train your own policy
-```bash
-# in flightpy venv
-cd /path/to/FlightBench/flightrl/onpolicy/scripts
-
-# use these sh files to start training a state based policy:
-./train_min_time_<scenario>-<test>.sh
-
-# use these sh files to start training a perception aware teacher:
-./train_perception_aware_<scenario>-<test>.sh
-
-# use these sh files to collect data using a perception aware teacher
-./collect_perception_aware_<scenario>-<test>.sh
-
-# run runner/student_trainer.py to pretrain a student
-# run these sh files to train a vision student
-./dagger_train_pa_student_<scenario>_<test>.sh
-```
-
-## License

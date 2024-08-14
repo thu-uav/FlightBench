@@ -14,7 +14,7 @@ sleep 2
 
 case $2 in
     "sb_min_time") echo "sb_min_time, test case $1"
-    python3 fly_path.py /path/to/path
+    python3 fly_path.py ../../bench_sb_min_time/path_dense.csv
     ;;
     "ego_planner") echo "ego_planner, test case $1"
     case $1 in

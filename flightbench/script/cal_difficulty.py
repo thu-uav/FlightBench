@@ -296,12 +296,12 @@ class difficultyCalculator():
 
 
 if __name__ == "__main__":
-    # if len(sys.argv) != 2:
-    #     print("\033[31mPlease use: 'python3 cal_difficulty.py <scene_path>' to calculate scene difficuly.\033[0m")
-    #     exit(-1)
-    # else:
-        #scene_path = os.path.join(os.environ["FLIGHTMARE_PATH"],sys.argv[1])
-        scene_path = os.path.join(os.environ["FLIGHTMARE_PATH"],"scene/maze-mid")
+    if len(sys.argv) != 2:
+        print("\033[31mPlease use: 'python3 cal_difficulty.py <scene_path>' to calculate scene difficuly.\033[0m")
+        exit(-1)
+    else:
+        scene_path = os.path.join(os.environ["FLIGHTMARE_PATH"],sys.argv[1])
+        # scene_path = os.path.join(os.environ["FLIGHTMARE_PATH"],"scene/maze-mid")
         print("scene path:", scene_path)
         calculator = difficultyCalculator(scene_path)
         calculator.calAll()
