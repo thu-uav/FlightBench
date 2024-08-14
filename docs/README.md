@@ -188,6 +188,7 @@ python3 cal_difficulty.py scene/maze-mid
 ```
 
 We provide 8 test cases for evaluation.
+
 | test_case_num |     name    |  TO  |  VO  |   AOL  |
 |:-------------:|:-----------:|:----:|:----:|:------:|
 | 0             |  forest-low | 0.76 | 0.30 | 7.6e-4 |
@@ -211,8 +212,10 @@ We integrate several representative planning algorithms in FlightBench, as detai
 |  5 |   agile_autonomy  |           IL          |<https://github.com/uzh-rpg/agile_autonomy>|
 |  6 | learning_min_time |    privileged & RL    |     /     |
 |  7 |    learning_pa    |        RL + IL        |     /     |
+
 ### Fly sb_min_time
 1. Generate ESDF map from the pointcloud
+
 ```bash
 cd /path/to/bench_sb_min_time
 # activate flightpy venv
@@ -224,6 +227,7 @@ python3 python/pcd_getsurface.py <pointcloud_path> <resolution>
 python3 python/map_pcd.py <pointcloud_path>
 mv <pointcloud_path>.npy /path/to/bench_sb_min_time/maps
 ```
+
 2. Generate trajectory
 
 Then modify `sst.yaml` to set the map and waypoints. Run `./start.sh` to generate trajectories.
@@ -235,7 +239,9 @@ Start simulator first
 cd /path/to/FlightBench/flightbench/scripts
 ./start_simulator.sh <test_case_num> <baseline_name>
 ```
+
 Then start flying
+
 ```bash
 # in another terminal
 cd /path/to/FlightBench/flightbench/scripts
