@@ -348,7 +348,7 @@ Then we can evaluate the student policy using the same way described in [Fly wit
 2. Use `start_simulator` and `start_baseline` to start a flight, as discussed in [Fly with baseline algorithms](#fly-with-baseline-algorithms).
 
 Refer to the reward curves if you train with our default settings.
-![curve](r-curve.png)
+![curve](r-curve.jpg)
 
 ## Train agile_autonomy policy
 
