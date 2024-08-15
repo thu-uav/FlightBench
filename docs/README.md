@@ -10,7 +10,7 @@ Our code is available [here](https://github.com/thu-uav/FlightBench). For detail
 1. [Introduction](#welcome-to-flightbench)
 2. [Table of Contents](#table-of-contents)
 3. [Installation](#installation)
-4. [Use Existing or Custom Scenarios](#use-existing-or-custom-scenarios)
+4. [Benchmark Design](#benchmark-design)
 5. [Let's Fly](#lets-fly)
 6. [Train Own Policy](#train-own-policy)
 7. [Citation](#citation)
@@ -38,7 +38,7 @@ cd FlightBench
 git submodule update --init --recursive
 
 # Add FLIGHTMARE_PATH environment variable to .bashrc file:
-echo "export FLIGHTMARE_PATH=/path/to/FlightBench" >> ~/.bashrc
+echo "export FLIGHTMARE_PATH=path/to/FlightBench" >> ~/.bashrc
 source ~/.bashrc
 
 # We recommend using python virtual env to manage python packages
@@ -118,7 +118,7 @@ catkin build
 Install python packages for agile autonomy
 ```bash
 # activate flightpy
-source /path/to/flightpy/bin/activate
+source path/to/flightpy/bin/activate
 cd path/to/benchmark_agile_autonomy
 pip install -r requirements.txt
 ```
@@ -133,13 +133,18 @@ make dependencies
 make
 ```
 
-# Use Existing or Custom Scenarios
-## Use our scenarios
-Download scene folder from [here](https://cloud.tsinghua.edu.cn/f/54d91a7afeeb4006b9a3/?dl=1) and put it to `path/to/FlightBench/scene` after unzip.
+# Benchmark Design
+## Use Existing or Custom Scenarios
+### Use our scenarios
 
-Download render file from [here](https://cloud.tsinghua.edu.cn/f/49674a52f55a451086bd/?dl=1). Put it into `path/to/FlightBench/flightrender` after unzip.
+We provide 3 distinct scenarios: forest, maze, and multi-waypoint. 
 
-## Customize own scenarios
+![scene](scene.jpg)
+
+1. Download scene folder from [here](https://cloud.tsinghua.edu.cn/f/54d91a7afeeb4006b9a3/?dl=1) and put it to `path/to/FlightBench/scene` after unzip.
+2. Download render file from [here](https://cloud.tsinghua.edu.cn/f/49674a52f55a451086bd/?dl=1). Put it into `path/to/FlightBench/flightrender` after unzip.
+
+### Customize own scenarios
 The Scenarios are customized using [Unity](https://unity.com/). Our unity project is forked from [flightmare_unity](https://github.com/uzh-rpg/flightmare_unity). You may choose to start with either [flightmare_unity](https://github.com/uzh-rpg/flightmare_unity) or [our project]() for modifications.
 
 1. Install Unity hub following [offical document](https://docs.unity3d.com/hub/manual/InstallHub.html)
@@ -173,6 +178,57 @@ scene
 
 Then put the folder into `path/to/FlightBench/scene` to support RL training and evluating.
 
+## Perception & control interface
+### Perception data
+RGBD image, odometry, and imu sensor data are provided. User can subscribe the following topics for flying.
+
+- `/<quad_name>/ground_truth/odometry`: pose and velocity (both linear and angular) under body frame
+- `/<quad_name>/ground_truth/imu`: imu data, containing angular velocity and linear acceleration under body frame
+- `/<quad_name>/flight_pilot/rgb`: a rgb8 encoding `sensor_msgs.Image` message, containing the ego-vision rgb image.
+- `/<quad_name>/flight_pilot/depth`: a 32fc1 encoding `sensor_msgs.Image` message, containing the ego-vision depth image.
+
+Users can enable/disable the RGB and Depth topic separately by modifying `path/to/FlightBench/flightros/params/default.yaml`.
+
+### Control interface
+There are many ways to control a quadrotor. At the lowest level, users can control the quadrotor using rate or attitude command.
+
+- Topics for rate or attitude: `/<quad_name>/autopilot/control_command_input`
+- Msg for rate or attitude: `quadrotor_msgs/ControlCommand`
+We provide a PD controller to track the desired rate or attitude. The parameters are available in `path/to/FlightBench/dep/quadrotor_control/simulation/rpg_rotors_interface/parameters/autopilot_air.yaml`.
+
+Higher level control commands are also supported by a [MPC](https://github.com/uzh-rpg/rpg_mpc) controller. The parameters are are available in `path/to/FlightBench/dep/rpg_mpc/parameters/air.yaml`.\
+
+- Velocity contorl: when setting desired velocities, the quadrotor try tracking the target velocities. Send velocity commands (in `geometry_msgs/TwistStamped` msg) via topic `/<quad_name>/autopilot/velocity_command` to enable velocity mode.
+- Full-state control: the message `quadrotor_msgs/TrajectoryPoint` supports both linear and angular states up to 5th order. You can publish the target states with the desired timestamp using the message.
+
+## Training interface
+FlightBench provides both state-based and image-based gym-like interfaces for RL training. We encourage users to use our environment as a code base to develop more RL algorithms & applications for drones.
+
+We provide a gym-like base environment `path/to/FlightBench/flightrl/onpolicy/envs/base_vec_env.py`. Users can define their own training environment based on this.
+
+### State-base RL environment
+We give an example `onpolicy.envs.learning_min_time.state_based_vec_env`.
+- action space: shape: (4, ), range: [-inf, inf]. Then use tanh to map the input into [-1, 1], corresponding to the collective thrust and body rates. A PD controller is applied for tracking the desired command.
+- obs space: shape: (13, ), range: [[-inf, inf]], containing position, orientation, linear & angular velocities of quadrotors.
+
+Users can customize their own environment by modifying several functions like `step`, `get_obs`, and `cal_reward`.
+
+### Vision-based RL environment
+Please refer to `onpolicy.envs.learning_perception_aware.perception_aware_vec_env`. We use a bridge, communicating with unity server, to get images.
+
+The observation space could be set as a mixed dict:
+```python
+obs_space_dict = {
+    'imu': spaces.Box(low=np.float32(-np.inf), high=np.float32(np.inf),
+                        shape=(self.args.state_len * self.n_imu, ),
+                        dtype="float32"),
+    'img': spaces.Box(low=0, high=256,
+                        shape=(320, 240),
+                        dtype="uint8"),
+}
+```
+
+
 # Let's Fly
 ## Evaluate task difficulty
 The task difficulty metrics defines on test cases. Each test case consists of a scenario, a start & end point, and a guiding path. The scenario, start point, and end point are self defined. We use path searching method from [sb_min_time](https://github.com/uzh-rpg/sb_min_time_quadrotor_planning) to generate guiding path.
@@ -180,8 +236,8 @@ The task difficulty metrics defines on test cases. Each test case consists of a 
 According to the instructions of [Fly sb_min_time](#fly-sb_min_time), the topological guiding path will be generated at first step. Then move them into the origanized scene folder. Use the following command to generate the task difficulty value:
 ```bash
 # activate flightpy venv
-source /path/to/flightpy/bin/activate
-cd /path/to/FlightBench/flightbench/scripts
+source path/to/flightpy/bin/activate
+cd path/to/FlightBench/flightbench/scripts
 python3 cal_difficulty.py scene/<scene_name>
 # for example:
 python3 cal_difficulty.py scene/maze-mid
@@ -217,15 +273,15 @@ We integrate several representative planning algorithms in FlightBench, as detai
 1. Generate ESDF map from the pointcloud
 
 ```bash
-cd /path/to/bench_sb_min_time
+cd path/to/bench_sb_min_time
 # activate flightpy venv
-source /path/to/flightpy/bin/activate
+source path/to/flightpy/bin/activate
 
 # get surface first
 python3 python/pcd_getsurface.py <pointcloud_path> <resolution>
 # then generate ESDF
 python3 python/map_pcd.py <pointcloud_path>
-mv <pointcloud_path>.npy /path/to/bench_sb_min_time/maps
+mv <pointcloud_path>.npy path/to/bench_sb_min_time/maps
 ```
 
 2. Generate trajectory
@@ -236,7 +292,7 @@ Then modify `sst.yaml` to set the map and waypoints. Run `./start.sh` to generat
 
 Start simulator first
 ```bash
-cd /path/to/FlightBench/flightbench/scripts
+cd path/to/FlightBench/flightbench/scripts
 ./start_simulator.sh <test_case_num> <baseline_name>
 ```
 
@@ -244,14 +300,14 @@ Then start flying
 
 ```bash
 # in another terminal
-cd /path/to/FlightBench/flightbench/scripts
+cd path/to/FlightBench/flightbench/scripts
 ./start_baseline.sh <test_case_num> <baseline_name>
 ```
 
 ### Fly other baselines
 We provide a unified test launch interface in `start_simulator.sh` and `start_baseline.sh`. Use the following commands to start a flight.
 ```bash
-cd /path/to/FlightBench/flightbench/scripts
+cd path/to/FlightBench/flightbench/scripts
 ./start_simulator.sh <test_case_num> <baseline_name>
 
 #in another terminal
@@ -272,7 +328,7 @@ We use [MAPPO](https://github.com/marlbenchmark/on-policy) to train the RL-relat
 
 ## Train & eval learning_min_time policy
 
-After installing flightgym and MAPPO, just activate flightpy venv and enter `/path/to/FlightBench/flightrl/onpolicy/scripts` directory. Then use `./train_min_time_<scene_name>.sh` to start training. The RL training process is logged using [wandb](https://wandb.ai).
+After installing flightgym and MAPPO, just activate flightpy venv and enter `path/to/FlightBench/flightrl/onpolicy/scripts` directory. Then use `./train_min_time_<scene_name>.sh` to start training. The RL training process is logged using [wandb](https://wandb.ai).
 
 Use `./train_min_time_<scene_name>.sh` to evaluate the policy. Remember to change the 'model_dir' parameter in the .sh file to select which model to evaluate.
 
@@ -290,6 +346,9 @@ Then we can evaluate the student policy using the same way described in [Fly wit
 
 1. Modify the `model_dir` parameter to choose your policy.
 2. Use `start_simulator` and `start_baseline` to start a flight, as discussed in [Fly with baseline algorithms](#fly-with-baseline-algorithms).
+
+Refer to the reward curves if you train with our default settings.
+![curve](r-curve.png)
 
 ## Train agile_autonomy policy
 
