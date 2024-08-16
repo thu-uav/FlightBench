@@ -152,6 +152,35 @@ The Scenarios are customized using [Unity](https://unity.com/). Our unity projec
 3. Then you can edit and build the project following [this](https://flightmare.readthedocs.io/en/latest/building_flightmare_binary/standalone.html#)
 4. Place the compiled files into `path/to/FlightBench/flightrender`.
 
+Based on Unity, the **dynamic obstacles** are also supported by scripting. For instance, add the following scripts to your obeject to enable an oribit move.
+```cs
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class orbit : MonoBehaviour
+{
+    public Transform target;
+    public float speed = 2f;
+    // Start is called before the first frame update
+    void Start() {}
+    // Update is called once per frame
+    void Update()
+    {
+        Vector3 targetPos = target.position;
+        Vector3 orbitPos = new Vector3(targetPos.x, transform.position.y, targetPos.z);
+        Vector3 direction = (orbitPos - transform.position).normalized;
+        float distanceToMove = speed * Time.deltaTime;
+        Vector3 y = new Vector3(0, 1, 0);
+        Vector3 newPosition = transform.position + Vector3.Cross(direction, y) * distanceToMove;
+        transform.position = newPosition;
+        transform.LookAt(targetPos);
+    }
+}
+```
+
+![orbit](orbit.gif)
+
 For training and evaluating RL-based methods, a scene folder should be organized as follow:
 ```
 scene
