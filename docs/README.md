@@ -1,5 +1,5 @@
 # Welcome to FlightBench
-*FlightBench* is an open-source comprehensive benchmark for 3D spatial path planning on quadrotors built on [Flightmare](https://github.com/uzh-rpg/flightmare). *FlightBench* provides cusomizable test scenarios (including three quantitative task difficulty metrics), representative planning algorithms, and comprehensive evaluation metrics. Here's an overview of FlightBench.
+*FlightBench* is an unified open-source benchmark for head-to-head comparison of learning-based and optimization based navigation methods on quadrotors built on [Flightmare](https://github.com/uzh-rpg/flightmare). *FlightBench* provides cusomizable test scenarios (including three quantitative task difficulty metrics), representative planning algorithms, and comprehensive evaluation metrics. Here's an overview of FlightBench.
 
 ![Overview of FlightBench](overview.jpg)
 ---
@@ -235,7 +235,7 @@ FlightBench provides both state-based and image-based gym-like interfaces for RL
 
 We provide a gym-like base environment `path/to/FlightBench/flightrl/onpolicy/envs/base_vec_env.py`. Users can define their own training environment based on this.
 
-### State-base RL environment
+### State-based RL environment
 We give an example `onpolicy.envs.learning_min_time.state_based_vec_env`.
 - action space: shape: (4, ), range: [-inf, inf]. Then use tanh to map the input into [-1, 1], corresponding to the collective thrust and body rates. A PD controller is applied for tracking the desired command.
 - obs space: shape: (13, ), range: [[-inf, inf]], containing position, orientation, linear & angular velocities of quadrotors.
