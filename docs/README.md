@@ -1,5 +1,5 @@
 # Welcome to FlightBench
-*FlightBench* is an unified open-source benchmark for head-to-head comparison of learning-based and optimization based navigation methods on quadrotors built on [Flightmare](https://github.com/uzh-rpg/flightmare). *FlightBench* provides cusomizable test scenarios (including three quantitative task difficulty metrics), representative planning algorithms, and comprehensive evaluation metrics. Here's an overview of FlightBench.
+*FlightBench* is an unified open-source benchmark for planning methods on ego-vision-based navigation for quadrotors built on [Flightmare](https://github.com/uzh-rpg/flightmare). *FlightBench* provides cusomizable test scenarios (including three quantitative task difficulty metrics), representative planning algorithms, and comprehensive evaluation metrics. Here's an overview of FlightBench.
 
 ![Overview of FlightBench](overview.jpg)
 ---
