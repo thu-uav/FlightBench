@@ -43,8 +43,8 @@ endif()
 message(STATUS "Eigen3 include dir: ${EIGEN3_INCLUDE_DIR}")
 
 # Including dependencies 
-include(cmake/pybind11_simple.cmake)
-include(cmake/yaml_simple.cmake)
+include(cmake/pybind11.cmake)
+include(cmake/yaml.cmake)
 
 # Including dependencies 
 find_package(OpenCV REQUIRED)
