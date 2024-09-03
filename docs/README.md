@@ -51,13 +51,7 @@ sudo apt-get install build-essential cmake libzmqpp-dev libopencv-dev libeigen3-
 pip install -r requirements.txt
 cd $FLIGHTMARE_PATH/flightlib
 
-# get external packages
-mkdir build && cd build
-cmake ..
-cd ..
-rm -rf build
-
-# then, install flightgym
+# install flightgym
 pip install .
 
 # install MAPPO
