@@ -135,11 +135,11 @@ We provide 3 distinct scenarios: forest, maze, and multi-waypoint.
 
 ![scene](scene.jpg)
 
-1. Download scene folder from [here](https://cloud.tsinghua.edu.cn/f/54d91a7afeeb4006b9a3/?dl=1) and put it to `path/to/FlightBench/scene` after unzip.
-2. Download render file from [here](https://cloud.tsinghua.edu.cn/f/49674a52f55a451086bd/?dl=1). Put it into `path/to/FlightBench/flightrender` after unzip.
+1. Download scene folder from [here](https://drive.google.com/file/d/1eBNju9oelVIcZc-yNd5Tm5ABRCHuhc8S/view?usp=drive_link) and put it to `path/to/FlightBench/scene` after unzip.
+2. Download render file from [here](https://drive.google.com/file/d/1drIRfkAV6kT5JHh0CO3Wud2SCRIIKZUF/view?usp=drive_link). Put it into `path/to/FlightBench/flightrender` after unzip.
 
 ### Customize own scenarios
-The Scenarios are customized using [Unity](https://unity.com/). Our unity project is forked from [flightmare_unity](https://github.com/uzh-rpg/flightmare_unity). You may choose to start with either [flightmare_unity](https://github.com/uzh-rpg/flightmare_unity) or [our project]() for modifications.
+The Scenarios are customized using [Unity](https://unity.com/). Our unity project is forked from [flightmare_unity](https://github.com/uzh-rpg/flightmare_unity). You may choose to start with either [flightmare_unity](https://github.com/uzh-rpg/flightmare_unity) or [our project](https://drive.google.com/file/d/1lNC0sASTxGhFCxRiMWLlStGgc98iget2/view?usp=drive_link) for modifications.
 
 1. Install Unity hub following [offical document](https://docs.unity3d.com/hub/manual/InstallHub.html)
 2. Add a project, unity hub will automatically prompt whether to install unity editor (2020.1.10f1)
