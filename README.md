@@ -9,17 +9,18 @@
 
 <font><div align='center' > [[📖 Documentation](https://thu-uav.github.io/FlightBench/)]  [[📜 arXiv Paper](https://arxiv.org/abs/2406.05687)] </div> </font>
 
----
-
 *FlightBench* is an open-source comprehensive benchmark for planning methods on ego-vision-based navigation for quadrotors built on [Flightmare](https://github.com/uzh-rpg/flightmare). *FlightBench* provides cusomizable test scenarios (including three quantitative task difficulty metrics), representative planning algorithms, and comprehensive evaluation metrics. FlightBench also integrates the [MAPPO](https://github.com/marlbenchmark/on-policy) algorithm, facilitating the training of RL-based planning methods.
 
 For usage and more details, please refer to the [documentation](https://thu-uav.github.io/FlightBench/)
 
+## 🔥News
+**[2024-11-24]** 🎁 We have added our implementation details and full experimental results to our [website](https://thu-uav.github.io/FlightBench/).
+
 ## Citation
-Please cite our paper [FlightBench: A Comprehensive Benchmark of Spatial Planning Methods for Quadrotors](https://arxiv.org/abs/2406.05687) if you use FlightBench in your work.
+Please cite our [paper](https://arxiv.org/abs/2406.05687) if you use FlightBench in your work.
 ```bibtex
 @article{yu2024flightbench,
-  title={FlightBench: A Comprehensive Benchmark of Spatial Planning Methods for Quadrotors},
+  title={FlightBench: Benchmarking Learning-based Methods for Ego-vision-based Quadrotors Navigation},
   author={Yu, Shu-Ang and Yu, Chao and Gao, Feng and Wu, Yi and Wang, Yu},
   journal={arXiv preprint arXiv:2406.05687},
   year={2024}
