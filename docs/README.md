@@ -1,3 +1,15 @@
+<script type="text/javascript" id="MathJax-script" async
+  src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
+</script>
+
+<script>
+  MathJax = {
+    tex: {
+      inlineMath: [['$', '$']]
+    }
+  };
+</script>
+
 # Welcome to FlightBench
 *FlightBench* is an unified open-source benchmark for planning methods on ego-vision-based navigation for quadrotors built on [Flightmare](https://github.com/uzh-rpg/flightmare). *FlightBench* provides cusomizable test scenarios (including three quantitative task difficulty metrics), representative planning algorithms, and comprehensive evaluation metrics. Here's an overview of FlightBench.
 
@@ -531,9 +543,9 @@ The figure bellow (Right) illustrates a typical Multi-Waypoint scenario characte
 ### Analyses on Effectiveness of Different Metrics
 #### Correlation Calculation Method.
 As the value of two metrics to be calculated for the correlation coefficient are denoted as $\{x_i\},\ \{y_i\}$, respectively. The correlation coefficient between $\{x_i\}$ and $\{y_i\}$ defines as
-$$
+```math
     \text{Corr}_{x,y} = \frac{\sum_i (x_i-\bar x)(y_i - \bar y)}{\sqrt{\sum_i (x_i-\bar x)^2\sum (y_i-\bar y)^2}},
-$$
+```
 where $\bar x,\ \bar y$ are the average values of $\{x_i\}$ and $\{y_i\}$.
 
 #### Results
