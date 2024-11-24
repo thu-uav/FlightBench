@@ -163,7 +163,7 @@ The Scenarios are customized using [Unity](https://unity.com/). Our unity projec
 
 Based on Unity, the **dynamic obstacles** are also supported by scripting. For instance, add the following scripts to your obeject to enable an oribit move.
 ```cs
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -543,9 +543,7 @@ The figure bellow (Right) illustrates a typical Multi-Waypoint scenario characte
 ### Analyses on Effectiveness of Different Metrics
 #### Correlation Calculation Method.
 As the value of two metrics to be calculated for the correlation coefficient are denoted as $\{x_i\},\ \{y_i\}$, respectively. The correlation coefficient between $\{x_i\}$ and $\{y_i\}$ defines as
-```math
-    \text{Corr}_{x,y} = \frac{\sum_i (x_i-\bar x)(y_i - \bar y)}{\sqrt{\sum_i (x_i-\bar x)^2\sum (y_i-\bar y)^2}},
-```
+<p> \[ \text{Corr}_{x,y} = \frac{\sum_i (x_i-\bar x)(y_i - \bar y)}{\sqrt{\sum_i (x_i-\bar x)^2\sum (y_i-\bar y)^2}}, \] </p>
 where $\bar x,\ \bar y$ are the average values of $\{x_i\}$ and $\{y_i\}$.
 
 #### Results
