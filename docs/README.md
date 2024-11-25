@@ -529,12 +529,12 @@ The figure bellow (Right) illustrates a typical Multi-Waypoint scenario characte
 <div style="display: flex;text-align: center;">  
 
   <div style="margin-right: 10px;">  
-    <img src="fail1.png" alt="Fail1" style="width: 400px;">
+    <img src="fail1.png" alt="Fail1" style="width: 320px;">
     <p>Maze Scenario</p>  
   </div>
 
   <div>
-    <img src="fail2.png" alt="Fail2" style="width: 400px;"> 
+    <img src="fail2.png" alt="Fail2" style="width: 320px;"> 
     <p>MW Scenario</p>   
   </div> 
 
@@ -554,12 +554,12 @@ When comparing the computation times of different methods, we observe that the t
 <div style="display: flex;text-align: center;">  
 
   <div style="margin-right: 10px;">  
-    <img src="heat/heat-sb.png" alt="SBMT" style="width: 400px;">  
+    <img src="heat/heat-sb.png" alt="SBMT" style="width: 320px;">  
     <p>Correlations for SBMT</p>
   </div>
 
   <div style="margin-right: 10px;">  
-    <img src="heat/heat-lmt.png" alt="LMT" style="width: 400px;">  
+    <img src="heat/heat-lmt.png" alt="LMT" style="width: 320px;">  
     <p>Correlations for LMT</p>
   </div>
 
@@ -568,12 +568,12 @@ When comparing the computation times of different methods, we observe that the t
 <div style="display: flex;text-align: center;">  
 
   <div style="margin-right: 10px;">  
-    <img src="heat/heat-tgk.png" alt="TGK" style="width: 400px;">  
+    <img src="heat/heat-tgk.png" alt="TGK" style="width: 320px;">  
     <p>Correlations for TGK-Planner</p>
   </div>
 
   <div style="margin-right: 10px;">  
-    <img src="heat/heat-fast.png" alt="Fast" style="width: 400px;">  
+    <img src="heat/heat-fast.png" alt="Fast" style="width: 320px;">  
     <p>Correlations for LMT</p>
   </div>
 
@@ -582,12 +582,12 @@ When comparing the computation times of different methods, we observe that the t
 <div style="display: flex;text-align: center;">  
 
   <div style="margin-right: 10px;">  
-    <img src="heat/heat-ego.png" alt="EGO" style="width: 400px;">  
+    <img src="heat/heat-ego.png" alt="EGO" style="width: 320px;">  
     <p>Correlations for EGO-Planner</p>
   </div>
 
   <div style="margin-right: 10px;">  
-    <img src="heat/heat-agile.png" alt="Agile" style="width: 400px;">  
+    <img src="heat/heat-agile.png" alt="Agile" style="width: 320px;">  
     <p>Correlations for Agile</p>
   </div>
 
@@ -596,7 +596,7 @@ When comparing the computation times of different methods, we observe that the t
 <div style="display: flex;text-align: center;">  
 
   <div style="margin-right: 10px;">  
-    <img src="heat/heat-lpa.png" alt="LPA" style="width: 400px;">  
+    <img src="heat/heat-lpa.png" alt="LPA" style="width: 320px;">  
     <p>Correlations for LPA</p>
   </div>
 
