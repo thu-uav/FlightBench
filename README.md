@@ -7,13 +7,23 @@
 
 ![Overview of FlightBench](docs/overview.jpg)
 
-<font><div align='center' > [[📖 Documentation](https://thu-uav.github.io/FlightBench/)]  [[📜 arXiv Paper](https://arxiv.org/abs/2406.05687)] </div> </font>
+<font><div align='center' > [[📖 Documentation](https://thu-uav.github.io/FlightBench/)]  [[📜 arXiv Paper](https://arxiv.org/abs/2406.05687)] [[⏩ Video](https://youtu.be/JxjMlrH4KZI)] </div> </font>
 
 *FlightBench* is an open-source comprehensive benchmark for planning methods on ego-vision-based navigation for quadrotors built on [Flightmare](https://github.com/uzh-rpg/flightmare). *FlightBench* provides cusomizable test scenarios (including three quantitative task difficulty metrics), representative planning algorithms, and comprehensive evaluation metrics. FlightBench also integrates the [MAPPO](https://github.com/marlbenchmark/on-policy) algorithm, facilitating the training of RL-based planning methods.
 
 For usage and more details, please refer to the [documentation](https://thu-uav.github.io/FlightBench/)
 
 ## 🔥News
+**[2025-03-01]** 🚁 We have added real-world experiments. For Experimental results and demonstrations, please refer to our [website](https://thu-uav.github.io/FlightBench/) and [video]().
+
+**[2025-03-01]** 🏕️ We have added two more realistic environments. (See our [website](https://thu-uav.github.io/FlightBench/)).
+
+**[2025-03-01]** 📎 We have added a new learning-based baseline [NPE](https://github.com/zzzzzyh111/NonExpert-Guided-Visual-UAV-Navigation-Gazebo) (See our [paper](https://arxiv.org/abs/2406.05687)).
+
+**[2025-03-01]** 💡 We have added more training details of learning-based methods to our [website](https://thu-uav.github.io/FlightBench/).
+
+**[2025-03-01]** ⏩ We have added [Summary Video](https://youtu.be/JxjMlrH4KZI) with additional real-world experiments demos.
+
 **[2024-11-24]** 🎁 We have added our implementation details and full experimental results to our [website](https://thu-uav.github.io/FlightBench/).
 
 ## Citation

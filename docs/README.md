@@ -16,20 +16,32 @@
 ![Overview of FlightBench](overview.jpg)
 ---
 
-The code is available [here](https://github.com/thu-uav/FlightBench). For details on the experimental setup and conclusions, please refer to our [paper](https://arxiv.org/abs/2406.05687).
+[📑Code](https://github.com/thu-uav/FlightBench) | [📜 arXiv Paper](https://arxiv.org/abs/2406.05687) | [⏩ Video](https://youtu.be/JxjMlrH4KZI).
 
 ## 🔥News
-[2024-11-24] 🎁 We have added our implementation details and full experimental results to Section [Additional Results](#additional-results).
+
+**[2025-03-01]** 🚁 We have added [Real-world Experiments](#real-world-experiments). For demonstrations, please refer to our [video](https://youtu.be/JxjMlrH4KZI).
+
+**[2025-03-01]** 🏕️ We have added two more realistic environments. (See [Scenarios](#use-existing-or-custom-scenarios)).
+
+**[2025-03-01]** 📎 We have added a new learning-based baseline [NPE](https://github.com/zzzzzyh111/NonExpert-Guided-Visual-UAV-Navigation-Gazebo) (See our [paper](https://arxiv.org/abs/2406.05687)).
+
+**[2025-03-01]** 💡 We have added more training details of learning-based methods to [Implementation Details](#implementation-details). The step-by-step tutorials for training the learning-based methods are available in [Train Own Policy](#train-own-policy).
+
+**[2024-11-24]** 🎁 We have added our full experimental results to [Additional Simulation Results](#additional-simulation-results).
+
+**[2025-03-01]** ⏩ We have added [Summary Video](https://youtu.be/JxjMlrH4KZI) with additional real-world experiments demos.
 
 # Table of Contents
 1. [Introduction](#welcome-to-flightbench)
 2. [Table of Contents](#table-of-contents)
 3. [Installation](#installation)
-4. [Benchmark Design](#benchmark-design)
+4. [Scenarios](#scenarios)
 5. [Let's Fly](#lets-fly)
-6. [Train Own Policy](#train-own-policy)
-7. [Additional Results](#additional-results)
-8. [Citation](#citation)
+6. [Baselines](#baselines)
+7. [Additional Simulation Results](#additional-simulation-results)
+8. [Real-world Experiments](#real-world-experiments)
+9. [Citation](#citation)
 
 # Installation
 Before starting the installation, please add your ssh key to github.
@@ -142,13 +154,15 @@ make dependencies
 make
 ```
 
-# Benchmark Design
+# Scenarios
 ## Use Existing or Custom Scenarios
 ### Use our scenarios
 
-We provide 3 distinct scenarios: forest, maze, and multi-waypoint. 
+We provide 5 distinct scenarios: forest, maze, multi-waypoint, forest-real, and office-real. Forest-real and Office-real are photorealistic scenarios with testure and llighting condition. We provide outdoor natural lighting for Forest-real and indoor overhead lighting for Office-real.
 
 ![scene](scene.jpg)
+![real](real.jpg)
+![real2](real2.jpg)
 
 1. Download scene folder from [here](https://drive.google.com/file/d/1eBNju9oelVIcZc-yNd5Tm5ABRCHuhc8S/view?usp=drive_link) and put it to `path/to/FlightBench/scene` after unzip.
 2. Download render file from [here](https://drive.google.com/file/d/1drIRfkAV6kT5JHh0CO3Wud2SCRIIKZUF/view?usp=drive_link). Put it into `path/to/FlightBench/flightrender` after unzip.
@@ -215,57 +229,6 @@ scene
 [This section (Evaluate task difficulty)](#evaluate-task-difficulty) shows the generation of `env-surface.ply` and `roadmap_shortened_unique_path`.
 
 Then put the folder into `path/to/FlightBench/scene` to support RL training and evluating.
-
-## Perception & control interface
-### Perception data
-RGBD image, odometry, and imu sensor data are provided. User can subscribe the following topics for flying.
-
-- `/<quad_name>/ground_truth/odometry`: pose and velocity (both linear and angular) under body frame
-- `/<quad_name>/ground_truth/imu`: imu data, containing angular velocity and linear acceleration under body frame
-- `/<quad_name>/flight_pilot/rgb`: a rgb8 encoding `sensor_msgs.Image` message, containing the ego-vision rgb image.
-- `/<quad_name>/flight_pilot/depth`: a 32fc1 encoding `sensor_msgs.Image` message, containing the ego-vision depth image.
-
-Users can enable/disable the RGB and Depth topic separately by modifying `path/to/FlightBench/flightros/params/default.yaml`.
-
-### Control interface
-There are many ways to control a quadrotor. At the lowest level, users can control the quadrotor using rate or attitude command.
-
-- Topics for rate or attitude: `/<quad_name>/autopilot/control_command_input`
-- Msg for rate or attitude: `quadrotor_msgs/ControlCommand`
-We provide a PD controller to track the desired rate or attitude. The parameters are available in `path/to/FlightBench/dep/quadrotor_control/simulation/rpg_rotors_interface/parameters/autopilot_air.yaml`.
-
-Higher level control commands are also supported by a [MPC](https://github.com/uzh-rpg/rpg_mpc) controller. The parameters are are available in `path/to/FlightBench/dep/rpg_mpc/parameters/air.yaml`.\
-
-- Velocity contorl: when setting desired velocities, the quadrotor try tracking the target velocities. Send velocity commands (in `geometry_msgs/TwistStamped` msg) via topic `/<quad_name>/autopilot/velocity_command` to enable velocity mode.
-- Full-state control: the message `quadrotor_msgs/TrajectoryPoint` supports both linear and angular states up to 5th order. You can publish the target states with the desired timestamp using the message.
-
-## Training interface
-FlightBench provides both state-based and image-based gym-like interfaces for RL training. We encourage users to use our environment as a code base to develop more RL algorithms & applications for drones.
-
-We provide a gym-like base environment `path/to/FlightBench/flightrl/onpolicy/envs/base_vec_env.py`. Users can define their own training environment based on this.
-
-### State-based RL environment
-We give an example `onpolicy.envs.learning_min_time.state_based_vec_env`.
-- action space: shape: (4, ), range: [-inf, inf]. Then use tanh to map the input into [-1, 1], corresponding to the collective thrust and body rates. A PD controller is applied for tracking the desired command.
-- obs space: shape: (13, ), range: [[-inf, inf]], containing position, orientation, linear & angular velocities of quadrotors.
-
-Users can customize their own environment by modifying several functions like `step`, `get_obs`, and `cal_reward`.
-
-### Vision-based RL environment
-Please refer to `onpolicy.envs.learning_perception_aware.perception_aware_vec_env`. We use a bridge, communicating with unity server, to get images.
-
-The observation space could be set as a mixed dict:
-```python
-obs_space_dict = {
-    'imu': spaces.Box(low=np.float32(-np.inf), high=np.float32(np.inf),
-                        shape=(self.args.state_len * self.n_imu, ),
-                        dtype="float32"),
-    'img': spaces.Box(low=0, high=256,
-                        shape=(320, 240),
-                        dtype="uint8"),
-}
-```
-
 
 # Let's Fly
 ## Evaluate task difficulty
@@ -361,8 +324,151 @@ python3 bag_parser.py <bag_folder> <test_case_num> <baseline_name>
 
 For conclusions and more details about our experiments, please refer to our [paper](https://arxiv.org/abs/2406.05687)
 
+# Baselines
+## Implementation Details
+
+In this part, we detail the implementation specifics of baselines in FlightBench, focusing particularly on methods without open-source code.
+
+### Optimization-based Methods
+
+Optimization-based methods typically employ a hierarchical structure, including an online mapping module followed by planning and control modules. **Fast-Planner** constructs both occupancy grid and Euclidean Signed Distance Field (ESDF) maps, whereas **TGK-Planner** and **EGO-Planner** only require an occupancy grid map. In the planning stage, **EGO-Planner** focuses on trajectory sections with new obstacles, acting as a local planner, while the other two use two-stage planning.
+
+[**Fast-Planner**](https://github.com/HKUST-Aerial-Robotics/Fast-Planner),  [**EGO-Planner**](https://github.com/ZJU-FAST-Lab/ego-planner), and [**TGK-Planner**](https://github.com/ZJU-FAST-Lab/TGK-Planner) have all released open-source code. We integrate their open-source code into FlightBench and apply the same set of parameters for evaluation, as detailed bellow.
+
+|  | **Parameter** | **Value** | **Parameter** | **Value** |
+|:---:|:---:|:---:|:---:|:---:|
+|  | Max. Vel. | $ 3.0 ms^{-1}$ | Max. Acc. | $6.0 ms^{-2}$ |
+| **All** | Obstacle Inflation | $0.09$ | Depth Filter Tolerance | $0.15m$ |
+|  | Map Resolution | $0.1m$ |  |  |
+| **Fast-Planner & TGK-Planner** | krrt $\rho$ | $0.13 m$ | Replan Time | $0.005 s$ |
+
+### Learning-based Methods
+Utilizing techniques such as imitation learning (IL) and reinforcement learning (RL), learning-based methods train neural networks for end-to-end planning, bypassing the time-consuming mapping process. The **step-by-step tutorials** for training these learning-based methods are available in [Train Own Policy](#train-own-policy).
+
+#### Agile
+**Agile** employs DAgger to imitate an expert generating collision-free trajectories using Metropolis-Hastings sampling and outputs mid-level waypoints. [**Agile**](https://github.com/uzh-rpg/agile_autonomy) is an open-source learning-based baseline. The inputs and outputs of the network are defined as follows: 
+- input-state: shape: (18, ), range: [[-inf, inf]]. Contains goal direction, rotation matrix, linear & angular velocities of quadrotors. The goal direction is represented as a unit vector pointing to the position 5 seconds into the future.
+- input-image: A depth image with a shape of (224, 224), which is encoded using MobileNet-V3.
+- output: Represents ten future waypoints, with each waypoint containing x, y, z coordinates in body frame.
+
+For each scenario, we finetune the policy from an open-source checkpoint using 100 rollouts. Following the approach described in `benchmark_agile_autonomy/planner_learning/dagger_training`, we use dagger to collect data online and train. All the data is annotated by experts using Metropolis-Hastings sampling.
+
+#### LPA
+**LPA** combines IL and RL, starting with training a teacher policy using **LMT**, then distilling this expertise into a ego-vision-based student. **LPA** has not provided open-source code. Therefore, we reproduce the two stage training process based on their paper. The RL training stage involves adding a perception-aware reward to **LMT** method: 
+- **Progress**: Measured as the length of the flight trajectory projected onto the reference trajectory, in meters.
+- **Diff_Progress**: The incremental progress achieved in a single training step.
+- **Waypoint**: A bonus reward is given when the quadrotor passes a waypoint within a threshold, with the bonus depending on the distance to the waypoint.
+- **Crash**: A penalty applied when the drone crashes.
+- **Omega**: A penalty term defined as $-\omega^2$, which discourages aggressive actions.
+- **Perception-Aware**: A penalty term defined as $\exp(-||\theta-\theta_{\text{dir}}||)$, where $\theta$ and $\theta_{\text{dir}}$ refers to the yaw angle of the quadrotor and the reference trajectory.
+
+Finally, a weighted sum of these rewards is calculated to determine the total reward.
+
+[PPO](https://github.com/marlbenchmark/on-policy) is used as the backbone algorithm. The algorithm is implemented in the folder `onpolicy.algorithms`.
+
+At the IL stage, DAgger is employed to distill the teacher's experience into an ego-vision student. The IL consists of two stages:
+- **Pretraining**: We use the teacher policy to collect image data (See `onpolicy/scripts/collect_perception_aware_xxx.sh`). With these data, pretrain the image encoder with `onpolicy/runner/student_trainer.py`.
+- **DAgger Training**: Freeze the image encoder and train the action network using `onpolicy/scripts/dagger_train_perception_aware.py`.
+
+Both teacher and student policies generate executable motion commands, specifically collective thrust and body rates (CTBR). All our experiments on **LPA** and **LMT** use the same set of hyperparameters, as listed after [privileged methods](#privileged-methods).
+
+
+### Privileged Methods
+#### SBMT
+[**SBMT**](https://github.com/uzh-rpg/sb_min_time_quadrotor_planning) is an open-source sampling-based trajectory generator. Retaining the parameters in their paper, we use **SBMT** package to generate topological guide path to calculate the task difficulty metrics, and employ [PAMPC](https://github.com/uzh-rpg/rpg_mpc) to track the generated offline trajectories.
+
+#### LMT
+We reproduce **LMT** from scratch based on the original paper, implementing the observation, action, reward function, and training techniques described in the paper. 
+
+We give an example training environments in `onpolicy.envs.learning_min_time.state_based_vec_env`. The action and observation spaces are set as following:
+- action space: shape: (4, ), range: [-inf, inf]. Then use tanh to map the input into [-1, 1], corresponding to the collective thrust and body rates. A PD controller is applied for tracking the desired command.
+- obs space: shape: (13, ), range: [[-inf, inf]], containing position, orientation, linear & angular velocities of quadrotors.
+
+The rewards are designed as follows:
+- **Progress**: Measured as the length of the flight trajectory projected onto the reference trajectory, in meters.
+- **Diff_Progress**: The incremental progress achieved in a single training step.
+- **Waypoint**: A bonus reward is given when the quadrotor passes a waypoint within a threshold, with the bonus depending on the distance to the waypoint.
+- **Crash**: A penalty applied when the drone crashes.
+- **Omega**: A penalty term defined as $-\omega^2$, which discourages aggressive actions.
+
+Finally, a weighted sum of these rewards is calculated to determine the total reward.
+
+[PPO](https://github.com/marlbenchmark/on-policy) is used as the backbone algorithm. The algorithm is implemented in the folder `onpolicy.algorithms`. Its hyperparameters are listed bellow.
+
+|  | **Parameter** | **Value** | **Parameter** | **Value** |
+|:---:|:---:|:---:|:---:|:---:|
+|  | Actor Lr | $5\times10^{-4}$ | Critic Lr | $5\times10^{-4}$ |
+| **RL** | PPO Epoch | $10$ | Batch Size | $51200$ |
+|  | Max Grad. Norm. | $8.0$ | Clip Ratio | $0.2$ |
+|  | Entropy Coefficient | $0.01$ |
+| **IL(DAgger)** | Lr | $2\times10^{-4}$ | Training Interval | $20$ |
+|  | Training Epoch | $6$ | Max Episode | $2000$ |
+
+### System details
+The overall system is implemented using ROS 1 Noetic Ninjemys. As mentioned in the main paper, we identify a quadrotor equipped with a depth camera and an IMU from real flight data. The physical characteristics of the quadrotor and its sensors are listed bellow.
+
+|  | **Parameter** | **Value** | **Parameter** | **Value** |
+|:---:|:---:|:---:|:---:|:---:|
+| **Quadrotor** | Mass | $1.0 kg$ | Max $\omega_{xy}$ | $8.0 rad/s$ |
+|  | Moment of Inertia | $[5.9, 6.0, 9.8] g m^2$ | Max. $\omega_{z}$ | $3.0 rad/s$ |
+|  | Arm Length | $0.125 m$ | Max SRT | $0.1 N$ |
+|  | Torque Constant | $0.0178 m$ | Min. SRT | $5.0 N$ |
+| **Sensors** | Depth Range | $4.0 m$ | Depth FOV | $90^\circ\times 75^\circ$ |
+|  | Depth Frame Rate | $30 Hz$ | IMU Rate | $100 Hz$ |
+
+
 # Train Own Policy
-We use [MAPPO](https://github.com/marlbenchmark/on-policy) to train the RL-related planning methods. 
+We use [MAPPO](https://github.com/marlbenchmark/on-policy) to train the RL-related planning methods. Below, we will first introduce the simulation interface for training, followed by the training techniques for each method.
+
+## Perception & control interface
+### Perception data
+RGBD image, odometry, and imu sensor data are provided. User can subscribe the following topics for flying.
+
+- `/<quad_name>/ground_truth/odometry`: pose and velocity (both linear and angular) under body frame
+- `/<quad_name>/ground_truth/imu`: imu data, containing angular velocity and linear acceleration under body frame
+- `/<quad_name>/flight_pilot/rgb`: a rgb8 encoding `sensor_msgs.Image` message, containing the ego-vision rgb image.
+- `/<quad_name>/flight_pilot/depth`: a 32fc1 encoding `sensor_msgs.Image` message, containing the ego-vision depth image.
+
+Users can enable/disable the RGB and Depth topic separately by modifying `path/to/FlightBench/flightros/params/default.yaml`.
+
+### Control interface
+There are many ways to control a quadrotor. At the lowest level, users can control the quadrotor using rate or attitude command.
+
+- Topics for rate or attitude: `/<quad_name>/autopilot/control_command_input`
+- Msg for rate or attitude: `quadrotor_msgs/ControlCommand`
+We provide a PD controller to track the desired rate or attitude. The parameters are available in `path/to/FlightBench/dep/quadrotor_control/simulation/rpg_rotors_interface/parameters/autopilot_air.yaml`.
+
+Higher level control commands are also supported by a [MPC](https://github.com/uzh-rpg/rpg_mpc) controller. The parameters are are available in `path/to/FlightBench/dep/rpg_mpc/parameters/air.yaml`.\
+
+- Velocity contorl: when setting desired velocities, the quadrotor try tracking the target velocities. Send velocity commands (in `geometry_msgs/TwistStamped` msg) via topic `/<quad_name>/autopilot/velocity_command` to enable velocity mode.
+- Full-state control: the message `quadrotor_msgs/TrajectoryPoint` supports both linear and angular states up to 5th order. You can publish the target states with the desired timestamp using the message.
+
+## Training interface
+FlightBench provides both state-based and image-based gym-like interfaces for RL training. We encourage users to use our environment as a code base to develop more RL algorithms & applications for drones.
+
+We provide a gym-like base environment `path/to/FlightBench/flightrl/onpolicy/envs/base_vec_env.py`. Users can define their own training environment based on this.
+
+### State-based RL environment
+We give an example `onpolicy.envs.learning_min_time.state_based_vec_env`.
+- action space: shape: (4, ), range: [-inf, inf]. Then use tanh to map the input into [-1, 1], corresponding to the collective thrust and body rates. A PD controller is applied for tracking the desired command.
+- obs space: shape: (13, ), range: [[-inf, inf]], containing position, orientation, linear & angular velocities of quadrotors.
+
+Users can customize their own environment by modifying several functions like `step`, `get_obs`, and `cal_reward`.
+
+### Vision-based RL environment
+Please refer to `onpolicy.envs.learning_perception_aware.perception_aware_vec_env`. We use a bridge, communicating with unity server, to get images.
+
+The observation space could be set as a mixed dict:
+```python
+obs_space_dict = {
+    'imu': spaces.Box(low=np.float32(-np.inf), high=np.float32(np.inf),
+                        shape=(self.args.state_len * self.n_imu, ),
+                        dtype="float32"),
+    'img': spaces.Box(low=0, high=256,
+                        shape=(320, 240),
+                        dtype="uint8"),
+}
+```
 
 ## Train & eval learning_min_time policy
 
@@ -392,63 +498,14 @@ Refer to the reward curves if you train with our default settings.
 
 We recommand creating another workspace and using their [original pipeline](https://github.com/uzh-rpg/agile_autonomy) to train an agile_autonomy policy. Due to differences in gcc version, training within this workspace may cause crashes.
 
-# Additional Results
-## Implementation Details
-
-In this part, we detail the implementation specifics of baselines in FlightBench, focusing particularly on methods without open-source code.
-
-### Optimization-based Methods
-
-[**Fast-Planner**](https://github.com/HKUST-Aerial-Robotics/Fast-Planner),  [**EGO-Planner**](https://github.com/ZJU-FAST-Lab/ego-planner), and [**TGK-Planner**](https://github.com/ZJU-FAST-Lab/TGK-Planner) have all released open-source code. We integrate their open-source code into FlightBench and apply the same set of parameters for evaluation, as detailed bellow.
-
-|  | **Parameter** | **Value** | **Parameter** | **Value** |
-|:---:|:---:|:---:|:---:|:---:|
-|  | Max. Vel. | $3.0 ms^{-1}$ | Max. Acc. | $6.0 ms^{-2}$ |
-| **All** | Obstacle Inflation | $0.09$ | Depth Filter Tolerance | $0.15m$ |
-|  | Map Resolution | $0.1m$ |  |  |
-| **Fast-Planner & TGK-Planner** | krrt $\rho$ | $0.13 m$ | Replan Time | $0.005 s$ |
-
-### Learning-based Methods}
-[**Agile**](https://github.com/uzh-rpg/agile_autonomy) is an open-source learning-based baseline. For each scenario, we finetune the policy from an open-source checkpoint using 100 rollouts before evaluation.
-
-**LPA** has not provided open-source code. Therefore, we reproduce the two stage training process based on their paper. The RL training stage involves adding a perception-aware reward to **LMT** method, which will be introduced [here](#privileged-methods).
-At the IL stage, DAgger is employed to distill the teacher's experience into an ego-vision student. All our experiments on **LPA** and **LMT** use the same set of hyperparameters, as listed after [privileged methods](#privileged-methods).
-
-
-### Privileged Methods
-[**SBMT**](https://github.com/uzh-rpg/sb_min_time_quadrotor_planning) is an open-source sampling-based trajectory generator. Retaining the parameters in their paper, we use **SBMT** package to generate topological guide path to calculate the task difficulty metrics, and employ [PAMPC](https://github.com/uzh-rpg/rpg_mpc) to track the generated offline trajectories.
-
-We reproduce **LMT** from scratch based on the original paper, implementing the observation, action, reward function, and training techniques described in the paper. [PPO](https://github.com/marlbenchmark/on-policy) is used as the backbone algorithm, and its hyperparameters are listed bellow.
-
-|  | **Parameter** | **Value** | **Parameter** | **Value** |
-|:---:|:---:|:---:|:---:|:---:|
-|  | Actor Lr | $5\times10^{-4}$ | Critic Lr | $5\times10^{-4}$ |
-| **RL** | PPO Epoch | $10$ | Batch Size | $51200$ |
-|  | Max Grad. Norm. | $8.0$ | Clip Ratio | $0.2$ |
-|  | Entropy Coefficient | $0.01$ |
-| **IL(DAgger)** | Lr | $2\times10^{-4}$ | Training Interval | $20$ |
-|  | Training Epoch | $6$ | Max Episode | $2000$ |
-
-### System details
-The overall system is implemented using ROS 1 Noetic Ninjemys. As mentioned in the main paper, we identify a quadrotor equipped with a depth camera and an IMU from real flight data. The physical characteristics of the quadrotor and its sensors are listed bellow.
-
-|  | **Parameter** | **Value** | **Parameter** | **Value** |
-|:---:|:---:|:---:|:---:|:---:|
-| **Quadrotor** | Mass | $1.0 kg$ | Max $\omega_{xy}$ | $8.0 rad/s$ |
-|  | Moment of Inertia | $[5.9, 6.0, 9.8] g m^2$ | Max. $\omega_{z}$ | $3.0 rad/s$ |
-|  | Arm Length | $0.125 m$ | Max SRT | $0.1 N$ |
-|  | Torque Constant | $0.0178 m$ | Min. SRT | $5.0 N$ |
-| **Sensors** | Depth Range | $4.0 m$ | Depth FOV | $90^\circ\times 75^\circ$ |
-|  | Depth Frame Rate | $30 Hz$ | IMU Rate | $100 Hz$ |
-
-## Additional Results
-### Benchmarking Performance
+# Additional Simulation Results
+## Benchmarking Performance
 
 Our paper analyzes the performance of the baselines only on the most challenging tests in each scenario due to space limitations. The full evaluation results are provided in the following three tables, represented in the form of `mean(std)`. 
 
 ---
 
-**Results in Forest**
+### Results in Forest
 
 | **Tests** | **Metric** | SBMT | LMT | TGK | Fast | EGO | Agile | LPA |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -473,7 +530,7 @@ Our paper analyzes the performance of the baselines only on the most challenging
 
 ---
 
-**Results in Maze**
+### Results in Maze
 
 | **Tests** | **Metric** | SBMT | LMT | TGK | Fast | EGO | Agile | LPA |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -498,7 +555,7 @@ Our paper analyzes the performance of the baselines only on the most challenging
 
 ---
 
-**Results in Multi-Waypoint(MW)**
+### Results in Multi-Waypoint(MW)
 
 | **Tests** | **Metric** | SBMT | LMT | TGK | Fast | EGO | Agile | LPA |
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
@@ -519,7 +576,7 @@ Our paper analyzes the performance of the baselines only on the most challenging
 
 The results indicate that optimization-based methods excel in energy efficiency and trajectory smoothness. In contrast, learning-based approaches tend to adopt more aggressive maneuvers. Although this aggressiveness grants learning-based methods greater agility, it also raises the risk of losing balance in sharp turns.
 
-### Failure Cases
+## Failure Cases
 As discussed in our paper, our benchmark remains challenging for ego-vision planning methods. In this part, we specifically examine the most demanding tests within the Maze and Multi-Waypoint scenarios to explore how scenarios with high VO and AOL cause failures. Video illustrations of failure cases are provided in the supplementary material.
 
 As shown bellow (Left), Test 3 in the Maze scenario has the highest VO among all tests. Before the quadrotor reaches waypoint 1, its field of view is obstructed by wall (A), making walls (B) and the target space (C) invisible. The sudden appearance of wall (B) often leads to collisions. Additionally, occlusions caused by walls (A) and (C) increase the likelihood of navigating to a local optimum, preventing effective planning towards the target space (C).
@@ -540,13 +597,13 @@ The figure bellow (Right) illustrates a typical Multi-Waypoint scenario characte
 
 </div>
 
-### Analyses on Effectiveness of Different Metrics
-#### Correlation Calculation Method.
+## Analyses on Effectiveness of Different Metrics
+### Correlation Calculation Method.
 As the value of two metrics to be calculated for the correlation coefficient are denoted as $\{x_i\},\ \{y_i\}$, respectively. The correlation coefficient between $\{x_i\}$ and $\{y_i\}$ defines as
 <p> \[ \text{Corr}_{x,y} = \frac{\sum_i (x_i-\bar x)(y_i - \bar y)}{\sqrt{\sum_i (x_i-\bar x)^2\sum (y_i-\bar y)^2}}, \] </p>
 where $\bar x,\ \bar y$ are the average values of $\{x_i\}$ and $\{y_i\}$.
 
-#### Results
+### Results
 Figures bellow shows the correlation coefficients between six performance metrics and three difficulty metrics for each method across multiple scenarios. As analyzed in our paper, TO and AOL significantly impact the motion performance of two privileged methods (SBMT and LMT). In scenarios with high TO and AOL, the baselines tend to fly slower, consume more energy, and exhibit less smoothness. Ego-vision methods are notably influenced by partial perception, making VO a crucial factor. Consequently, high VO greatly decreases the success rate of ego-vision methods, much more so than it does for privileged methods.
 
 When comparing the computation times of different methods, we observe that the time required by learning-based methods primarily depends on the network architecture and is minimally influenced by the scenario. Conversely, the computation times for optimization- and sampling-based methods are affected by both AOL and TO. Scenarios with higher TO and AOL demonstrate increased planning complexity, resulting in longer computation times.
@@ -601,6 +658,44 @@ When comparing the computation times of different methods, we observe that the t
   </div>
 
 </div>
+
+# Real-world Experiments
+
+EGO and Agile are selected for real-world validation. We use our customized quadrotor for deployment. Our quadrotor integrates an NVIDIA Orin NX for computation and utilizes MAVLink to interface with the PX4 flight controller for low-level control.
+<div style="display: flex;text-align: center;">  
+
+  <div style="margin-right: 10px;">  
+    <img src="quadrotor.jpg" alt="quadrotor" style="width: 450px;"> 
+  </div>
+</div>
+
+## Full-Pipeline Experiment
+
+We first conduct full-pipeline flight to show the deployment capability. All state estimation, computation, and control are performed on board. The flying trajectories are as follow:
+![fp](fp.jpg)
+
+Get more demonstrations through our [video](https://youtu.be/JxjMlrH4KZI).
+
+## Hardware-In-The-Loop Experiments
+The data pipeline of hardware-in-the-loop(HITL) experiment is shown in the figure below. The quadrotor flies in an empty space, while getting image perception from the simulator. We use [swarm ros bridge](https://github.com/shupx/swarm_ros_bridge) for data communication via WLAN.
+<div style="display: flex;text-align: center;">  
+
+  <div style="margin-right: 10px;">  
+    <img src="hitl-pipeline.jpg" alt="pipeline" style="width: 450px;">
+  </div>
+</div>
+
+Using HITL experiment, we can quantitatively analyze the real-world flight performance.
+
+| **Tests** | TO | VO | AOL | **EGO** |  |  |  | **Agile** |  |  |  |
+|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
+| | | | | Avg. Spd.<br>($ms^{-1}$) $\uparrow$ | Avg. Curv.<br>($m^{-1}$) $\downarrow$ | Avg. Acc.<br>($ms^{-3}$) $\downarrow$ | Avg. Jerk<br>($ms^{-5}$) $\downarrow$ | Avg. Spd.<br>($ms^{-1}$) $\uparrow$ | Avg. Curv.<br>($m^{-1}$) $\downarrow$ | Avg. Acc.<br>($ms^{-3}$) $\downarrow$ | Avg. Jerk<br>($ms^{-5}$) $\downarrow$ |
+| 1 | 0.98 | 0.57 | 3$\times 10^{-4}$ | 1.39 | 0.54 | 1.40 | 4.85$\times 10^2$ | 1.45 | 0.65 | 2.11 | 3.99$\times 10^3$ |
+| 2 | 1.81 | 1.82 | 0.027 | 1.32 | 0.92 | 1.68 | 5.64$\times 10^2$ | 1.47 | 1.61 | 5.62 | 6.64$\times 10^3$ |
+| 3 | 2.07 | 1.85 | 0.040 | 1.39 | 1.55 | 5.20 | 7.70$\times 10^2$ | 1.51 | 1.62 | 7.82 | 8.36 $\times 10^3$|
+
+In more challenging scenarios (with higher TO, VO, and AOL), the quadrotor exhibits increased curvature, acceleration, and jerk during the flight. In the same scenarios, Agile shows larger curvature, acceleration, and jerk compared to EGO, leading to less smooth flight.
+
 
 
 # Citation
